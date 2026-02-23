@@ -1,6 +1,4 @@
 package com.ecommerce.project.dto;
-
-import com.ecommerce.project.model.Product;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,5 +9,5 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductResponse {
-    private List<Product> products;
+    private List<ProductRequest> content;
 }

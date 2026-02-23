@@ -86,7 +86,5 @@ public class CategoryServiceImpl implements CategoryService {
         updatedCategory.setCategoryName(mapCategory.getCategoryName());
         repository.save(updatedCategory);
         return modelMapper.map(updatedCategory, CategoryRequest.class);
-
-
     }
 }
