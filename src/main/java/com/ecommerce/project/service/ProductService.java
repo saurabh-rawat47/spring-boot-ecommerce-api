@@ -9,4 +9,6 @@ public interface ProductService {
     ProductRequest addProduct(@Valid Product product, Long categoryId);
 
     ProductResponse getAllProduct();
+
+    ProductResponse searchByCategory(Long categoryId);
 }
