@@ -7,6 +7,7 @@ import com.ecommerce.project.model.Category;
 import com.ecommerce.project.model.Product;
 import com.ecommerce.project.repository.CategoryRepository;
 import com.ecommerce.project.repository.ProductRepository;
+import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -25,10 +26,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductRequest addProduct(Product product, Long categoryId) {
+    public ProductRequest addProduct(ProductRequest productRequest, Long categoryId) {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Category", "CategoryId", categoryId));
 
+        Product product = modelMapper.map(productRequest, Product.class);
         product.setImage("default.png");
         double specialPrice = product.getPrice() - ((product.getDiscount() * 0.01) * product.getPrice());
         product.setSpecialPrice(specialPrice);
@@ -71,10 +73,11 @@ public class ProductServiceImpl implements ProductService {
         return productResponse;
     }
 
-    @Override
-    public ProductRequest updateProduct(Product product, Long productId) {
+@Override
+    public ProductRequest updateProduct(@Valid ProductRequest productRequest, Long productId) {
         Product existingProduct = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "ProductId", productId));
+        Product product = modelMapper.map(productRequest, Product.class);
         existingProduct.setProductName(product.getProductName());
         existingProduct.setDescription(product.getDescription());
         existingProduct.setPrice(product.getPrice());

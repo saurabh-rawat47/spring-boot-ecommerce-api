@@ -2,7 +2,6 @@ package com.ecommerce.project.controller;
 
 import com.ecommerce.project.dto.ProductRequest;
 import com.ecommerce.project.dto.ProductResponse;
-import com.ecommerce.project.model.Product;
 import com.ecommerce.project.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -20,9 +19,10 @@ public class ProductController {
     }
 
     @PostMapping("/admin/categories/{categoryId}/product")
-    public ResponseEntity<ProductRequest> addProduct(@Valid @RequestBody Product product, @PathVariable Long categoryId) {
-        ProductRequest productRequest = productService.addProduct(product, categoryId);
-        return new ResponseEntity<>(productRequest, HttpStatus.CREATED);
+    public ResponseEntity<ProductRequest> addProduct(@Valid @RequestBody ProductRequest productRequest,
+                                                     @PathVariable Long categoryId) {
+        ProductRequest saveProductRequest = productService.addProduct(productRequest, categoryId);
+        return new ResponseEntity<>(saveProductRequest, HttpStatus.CREATED);
     }
 
     @GetMapping("/public/products")
@@ -44,9 +44,10 @@ public class ProductController {
     }
 
     @PutMapping("/admin/products/{productId}")
-    public ResponseEntity<ProductRequest> updateProduct(@Valid @RequestBody Product product, @PathVariable Long productId) {
-        ProductRequest productRequest = productService.updateProduct(product, productId);
-        return new ResponseEntity<>(productRequest, HttpStatus.OK);
+    public ResponseEntity<ProductRequest> updateProduct(@Valid @RequestBody ProductRequest productRequest,
+                                                        @PathVariable Long productId) {
+        ProductRequest updatedProductRequest = productService.updateProduct(productRequest, productId);
+        return new ResponseEntity<>(updatedProductRequest, HttpStatus.OK);
     }
 
     @DeleteMapping("/admin/products/{productId}")
