@@ -7,6 +7,9 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 
 @RestController
@@ -54,5 +57,12 @@ public class ProductController {
     public ResponseEntity<ProductRequest> deleteProduct(@PathVariable Long productId) {
         ProductRequest deletedProduct = productService.deleteProduct(productId);
         return new ResponseEntity<>(deletedProduct, HttpStatus.OK);
+    }
+
+    @PutMapping("/products/{productId}/image")
+    public ResponseEntity<ProductRequest> updateProductImage(@Valid @PathVariable Long productId,
+                                                              @RequestParam("image") MultipartFile image) throws IOException {
+        ProductRequest updateProductImg = productService.updateProductImage(productId, image);
+        return new ResponseEntity<>(updateProductImg, HttpStatus.OK);
     }
 }

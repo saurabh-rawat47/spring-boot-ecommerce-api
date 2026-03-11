@@ -9,20 +9,29 @@ import com.ecommerce.project.repository.CategoryRepository;
 import com.ecommerce.project.repository.ProductRepository;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
+
 
 @Service
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final ModelMapper modelMapper;
+    private final FileService fileService;
 
-    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository, ModelMapper modelMapper) {
+    @Value("${project.image}")
+    private String path;
+
+    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository, ModelMapper modelMapper, FileService fileService) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
         this.modelMapper = modelMapper;
+        this.fileService = fileService;
     }
 
     @Override
@@ -73,7 +82,7 @@ public class ProductServiceImpl implements ProductService {
         return productResponse;
     }
 
-@Override
+    @Override
     public ProductRequest updateProduct(@Valid ProductRequest productRequest, Long productId) {
         Product existingProduct = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "ProductId", productId));
@@ -100,8 +109,18 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "ProductId", productId));
         productRepository.delete(product);
         return modelMapper.map(product, ProductRequest.class);
-
     }
+
+    @Override
+    public ProductRequest updateProductImage(Long productId, MultipartFile image) throws IOException {
+        Product productFromDb = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product", "ProductId", productId));
+        String fileName = fileService.uploadImage(path, image);
+        productFromDb.setImage(fileName);
+        Product updateProduct = productRepository.save(productFromDb);
+        return modelMapper.map(updateProduct, ProductRequest.class);
+    }
+
 }
 
 
